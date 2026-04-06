@@ -27,7 +27,6 @@
   * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
   html, body { height:100%; background:#1A1A2E; display:flex; justify-content:center; align-items:center; font-family:'DM Sans',sans-serif; }
 
-  /* Phone shell */
   #phone {
     width: 390px; height: 844px;
     background: var(--surface);
@@ -49,7 +48,6 @@
   .status-bar.light { color:#0A1628; }
   .status-bar.dark { color:white; }
 
-  /* Screens */
   .screen {
     position:absolute; inset:0;
     overflow-y:auto; overflow-x:hidden;
@@ -62,7 +60,6 @@
   .screen::-webkit-scrollbar { display:none; }
   .screen.active { display:flex; }
 
-  /* Bottom nav */
   .bottom-nav {
     position:absolute; bottom:0; left:0; right:0; height:80px;
     background:rgba(255,255,255,0.95);
@@ -82,7 +79,6 @@
   .nav-item.active .nav-label { color:var(--saffron); }
   .nav-item.active .nav-icon { transform:scale(1.15); }
 
-  /* Toast */
   #toast {
     position:absolute; top:54px; left:16px; right:16px;
     background:var(--deep); color:white;
@@ -94,7 +90,6 @@
   }
   #toast.show { opacity:1; }
 
-  /* ── HOME SCREEN ── */
   .home-header {
     background:linear-gradient(155deg, #0A1628 0%, #1246A0 60%, #FF6B00 140%);
     padding:52px 22px 24px;
@@ -158,7 +153,6 @@
   .ai-tip-label { font-size:11px; font-weight:700; color:var(--purple); margin-bottom:4px; }
   .ai-tip-text { font-size:12px; color:var(--text); line-height:1.5; }
 
-  /* Zone card */
   .zone-card {
     margin:0 16px 10px;
     background:var(--card); border-radius:18px;
@@ -183,7 +177,6 @@
     font-size:10px; padding:3px 8px; border-radius:20px; font-weight:600;
   }
 
-  /* ── MAP SCREEN ── */
   .map-header {
     background:var(--deep); padding:52px 22px 16px; color:white;
   }
@@ -202,7 +195,6 @@
   .map-list-item:last-child { border-bottom:none; }
   .map-dot { width:11px; height:11px; border-radius:50%; margin-right:10px; flex-shrink:0; }
 
-  /* ── BOOK SCREEN ── */
   .book-header {
     padding:52px 22px 22px; color:white;
     position:relative; overflow:hidden;
@@ -258,7 +250,6 @@
   }
   .pay-btn:active { transform:scale(0.97); box-shadow:none; }
 
-  /* ── CONFIRM SCREEN ── */
   .confirm-top {
     background:linear-gradient(155deg, #0E7A45, #0A5530);
     padding:60px 22px 30px; text-align:center; color:white;
@@ -285,7 +276,6 @@
   }
   .qr-svg { border-radius:12px; background:white; padding:12px; box-shadow:0 2px 10px rgba(0,0,0,0.08); }
 
-  /* ── ACTIVE SCREEN ── */
   .active-top {
     background:linear-gradient(155deg, #0A1628, #1246A0);
     padding:52px 22px 26px; color:white; text-align:center;
@@ -314,11 +304,9 @@
   .action-btn.danger { background:white; color:var(--red); border:2px solid var(--red); }
   .action-btn.outline { background:white; color:var(--blue); border:2px solid var(--blue); }
 
-  /* ── ANIMATIONS ── */
   @keyframes slideUp { from{transform:translateY(30px);opacity:0} to{transform:translateY(0);opacity:1} }
   .slide-up { animation:slideUp 0.35s ease forwards; }
 
-  /* Map fallback */
   .map-fallback {
     width:100%; height:100%;
     background:linear-gradient(160deg, #d4e8c2, #b8d4a8);
@@ -349,16 +337,13 @@
 <div id="phone">
   <div class="notch"></div>
 
-  <!-- STATUS BAR -->
   <div class="status-bar dark" id="status-bar">
     <span id="status-time">9:41</span>
     <span>📶 🔋</span>
   </div>
 
-  <!-- TOAST -->
   <div id="toast"></div>
 
-  <!-- BOTTOM NAV -->
   <div class="bottom-nav" id="bottom-nav">
     <div class="nav-item active" onclick="showScreen('home')" data-screen="home">
       <span class="nav-icon">🏠</span><span class="nav-label">Home</span>
@@ -374,7 +359,6 @@
     </div>
   </div>
 
-  <!-- ══════════════ HOME SCREEN ══════════════ -->
   <div class="screen active" id="screen-home">
     <div class="home-header">
       <p class="greeting">Good morning 🙏</p>
@@ -399,7 +383,6 @@
       </div>
     </div>
 
-    <!-- AI Tip -->
     <div style="padding:16px 16px 0;">
       <div class="ai-tip">
         <div class="ai-tip-label">🤖 AI Suggestion</div>
@@ -407,7 +390,6 @@
       </div>
     </div>
 
-    <!-- Festival toggle -->
     <div style="padding:10px 16px 0; display:flex; gap:10px;">
       <div onclick="toggleFestival()" id="festival-btn"
         style="flex:1; background:var(--saffron-light); border:1.5px solid #FFCB90; border-radius:14px; padding:12px 14px; cursor:pointer; display:flex; align-items:center; gap:10px;">
@@ -432,7 +414,6 @@
     <div style="height:10px;"></div>
   </div>
 
-  <!-- ══════════════ MAP SCREEN ══════════════ -->
   <div class="screen" id="screen-map" style="padding-bottom:80px;">
     <div class="map-header">
       <h2>Live Parking Map</h2>
@@ -453,7 +434,6 @@
     <div class="map-list" id="map-zone-list"></div>
   </div>
 
-  <!-- ══════════════ BOOK SCREEN ══════════════ -->
   <div class="screen" id="screen-book" style="padding-bottom:80px;">
     <div class="book-header" id="book-header">
       <div class="back-btn" onclick="showScreen('home')">← Back</div>
@@ -502,7 +482,6 @@
     </div>
   </div>
 
-  <!-- ══════════════ CONFIRM SCREEN ══════════════ -->
   <div class="screen" id="screen-confirm" style="padding-bottom:80px;">
     <div class="confirm-top">
       <div class="confirm-check">✅</div>
@@ -527,7 +506,6 @@
     <div class="action-btn outline" onclick="showScreen('home')">Back to Home</div>
   </div>
 
-  <!-- ══════════════ ACTIVE SCREEN ══════════════ -->
   <div class="screen" id="screen-active" style="padding-bottom:80px;">
     <div class="active-top">
       <div style="font-size:12px; opacity:0.6; margin-bottom:4px;" id="active-id-label">—</div>
@@ -550,16 +528,13 @@
     <div class="action-btn danger" onclick="endBooking()">🚗 Exit & End Booking</div>
   </div>
 
-</div><!-- /phone -->
-
-<!-- ONLY showing modified + integrated full script part to keep this readable -->
+</div>
 
 <script>
-
 // ✅ DEFAULT API KEY (auto-load)
 const DEFAULT_API_KEY = "AIzaSyBbbOqX1omXUIHsz5VGzvJrCTaJUMub98E";
 
-// ── DATA ─────────────────────────────────────────────────────────────────────
+// ── DATA ──────────────────────────────────────────────────────────────────
 const ZONES = [
   { id:1, name:"Singhdwar Entry Zone", type:"Multi-Level", total:500, available:143,
     dist:"0.3 km · NH-58 Gate", price:30,
@@ -589,12 +564,148 @@ const ZONES = [
 ];
 
 let liveZones = ZONES.map(z => ({...z}));
+let festivalMode = false;
 let selectedZone = null;
-let selectedDuration = 2;
 let selectedVehicle = "🚗 Car";
+let selectedDuration = 2;
 let currentBooking = null;
+let timerInterval = null;
+let mapInstance = null;
+let mapMarkers = [];
 
-// ── AI SMART LOGIC ────────────────────────────────────────────────────────────
+// ── LIVE DATA SIMULATION ──────────────────────────────────────────────
+setInterval(() => {
+  liveZones = liveZones.map(z => ({
+    ...z,
+    available: Math.max(0, Math.min(z.total, z.available + Math.floor(Math.random()*7)-3))
+  }));
+  refreshZoneList();
+  updateStats();
+  updateMapMarkers();
+}, 5000);
+
+// ── CLOCK ─────────────────────────────────────────────────────────────
+function updateClock() {
+  const now = new Date();
+  document.getElementById('status-time').textContent =
+    now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
+}
+setInterval(updateClock, 10000);
+updateClock();
+
+// ── SCREEN NAVIGATION ────────────────────────────────────────────────
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + name).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => {
+    n.classList.toggle('active', n.dataset.screen === name);
+  });
+  const darkHeaders = ['home','map','active'];
+  document.getElementById('status-bar').className = 'status-bar ' + (darkHeaders.includes(name) ? 'dark' : 'light');
+  if (name === 'map' && !mapInstance) tryAutoloadMap();
+}
+
+function showActiveOrHome() {
+  showScreen(currentBooking ? 'active' : 'home');
+}
+
+// ── HOME: RENDER ──────────────────────────────────────────────────────
+function occupancyColor(avail, total) {
+  const p = avail / total;
+  if (p > 0.35) return '#0E7A45';
+  if (p > 0.12) return '#C05000';
+  return '#CC1A1A';
+}
+
+function refreshZoneList() {
+  const container = document.getElementById('zone-list');
+  container.innerHTML = '';
+  liveZones.forEach(z => {
+    const pct = Math.round(z.available / z.total * 100);
+    const oc = occupancyColor(z.available, z.total);
+    const div = document.createElement('div');
+    div.className = 'zone-card';
+    div.innerHTML = `
+      <div class="accent-line" style="background:${z.color}"></div>
+      <div class="zone-card-inner">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+          <div>
+            <div class="zone-name">${z.name}</div>
+            <div class="zone-sub">${z.type} · ${z.dist}</div>
+          </div>
+          <div style="text-align:right;flex-shrink:0;margin-left:10px;">
+            <div class="zone-price" style="color:${z.color}">₹${z.price}/hr</div>
+            <div class="zone-avail" style="color:${oc}">${z.available > 0 ? z.available+' free' : 'FULL'}</div>
+          </div>
+        </div>
+        <div class="occ-bar-bg"><div class="occ-bar-fill" style="width:${pct}%;background:${oc}"></div></div>
+        <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-top:4px;">
+          <span>${pct}% available</span><span>${z.total} total spaces</span>
+        </div>
+        <div class="zone-tags">
+          ${z.features.map(f => `<span class="zone-tag" style="background:${z.light};color:${z.color}">${f}</span>`).join('')}
+        </div>
+      </div>`;
+    div.onclick = () => openBooking(z);
+    container.appendChild(div);
+  });
+
+  const ml = document.getElementById('map-zone-list');
+  if (ml) {
+    ml.innerHTML = '<div style="padding-bottom:6px;">';
+    liveZones.forEach(z => {
+      const oc = occupancyColor(z.available, z.total);
+      const row = document.createElement('div');
+      row.className = 'map-list-item';
+      row.innerHTML = `
+        <div style="display:flex;align-items:center;">
+          <div class="map-dot" style="background:${z.color}"></div>
+          <div>
+            <div style="font-size:13px;font-weight:700;color:var(--text)">${z.name}</div>
+            <div style="font-size:11px;color:var(--muted)">${z.dist}</div>
+          </div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:13px;font-weight:700;color:${oc}">${z.available} free</div>
+          <div style="font-size:11px;color:var(--muted)">₹${z.price}/hr</div>
+        </div>`;
+      row.onclick = () => openBooking(z);
+      ml.appendChild(row);
+    });
+  }
+}
+
+function updateStats() {
+  const total = liveZones.reduce((a,z) => a+z.available, 0);
+  document.getElementById('total-avail').textContent = total.toLocaleString('en-IN');
+  const busiest = liveZones.reduce((a,b) => (b.available/b.total < a.available/a.total ? b : a));
+  const pct = Math.round(busiest.available/busiest.total*100);
+  document.getElementById('busiest-label').textContent = pct+'%';
+
+  const best = getBestZone();
+  const tip = festivalMode
+    ? `🪔 Aarti Mode: Pilgrims should book Har ki Pauri Pilgrim Zone. Shuttle departs Bay 3 every 10 min.`
+    : `Best availability right now: ${best ? best.name : 'Loading...'} (${best ? best.available : '—'} spots free). Estimated arrival: ${Math.ceil(Math.random()*4)+2} min.`;
+  document.getElementById('ai-tip-text').textContent = tip;
+  if (document.getElementById('active-ai-text') && currentBooking) {
+    document.getElementById('active-ai-text').textContent = festivalMode
+      ? "Aarti ends in ~30 min. Exit via Gate B to avoid post-aarti rush. Shuttle at Bay 3."
+      : "Occupancy is stable in your zone. No congestion expected in next 2 hours. Enjoy your visit!";
+  }
+}
+
+// ── FESTIVAL MODE ─────────────────────────────────────────────────────
+function toggleFestival() {
+  festivalMode = !festivalMode;
+  document.getElementById('festival-banner').style.display = festivalMode ? '' : 'none';
+  document.getElementById('festival-status').textContent = festivalMode ? 'Active 🟢' : 'Off — tap to activate';
+  document.getElementById('festival-btn').style.background = festivalMode ? '#FF6B00' : 'var(--saffron-light)';
+  document.getElementById('festival-btn').querySelector('div:first-child + div > div:first-child').style.color = festivalMode ? 'white' : 'var(--saffron)';
+  updateStats();
+  showToast(festivalMode ? '🪔 Aarti Mode Activated!' : 'Aarti Mode Deactivated');
+}
+
+// ── AI SMART LOGIC ────────────────────────────────────────────────────
 function getBestZone() {
   return liveZones
     .filter(z => z.available > 0)
@@ -605,56 +716,289 @@ function getBestZone() {
     })[0];
 }
 
-// ── NAVIGATION FEATURE ────────────────────────────────────────────────────────
+// ── NAVIGATION FEATURE ────────────────────────────────────────────────
 function openNavigation(lat, lng) {
   window.open(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`);
 }
 
-// ── AUTO MAP LOAD ─────────────────────────────────────────────────────────────
-function tryAutoloadMap() {
-  const key = localStorage.getItem("gmaps_key") || DEFAULT_API_KEY;
-  document.getElementById('api-key-input').value = key;
-  loadGoogleMaps();
-}
-
-// ── BOOKING ───────────────────────────────────────────────────────────────────
-function processBooking() {
-  if (!selectedZone) return alert("Select a zone");
-
-  currentBooking = {
-    zone: selectedZone,
-    duration: selectedDuration,
-    vehicle: selectedVehicle,
-    time: Date.now()
-  };
-
-  // ✅ Save booking
-  localStorage.setItem("booking", JSON.stringify(currentBooking));
-
-  // ✅ Vibration feedback
-  if (navigator.vibrate) navigator.vibrate(40);
-
-  alert("Booking Confirmed!");
-}
-
-// ── LOAD SAVED BOOKING ────────────────────────────────────────────────────────
-function loadSavedBooking() {
-  const saved = localStorage.getItem("booking");
-  if (saved) {
-    currentBooking = JSON.parse(saved);
-    console.log("Restored booking:", currentBooking);
-  }
-}
-
-// ── TIME-TO-FULL PREDICTION ───────────────────────────────────────────────────
+// ── TIME-TO-FULL PREDICTION ──────────────────────────────────────────
 function getTimeToFull(zone) {
   const rate = Math.random()*2 + 1;
   return Math.floor(zone.available / rate);
 }
 
-// ── INIT ──────────────────────────────────────────────────────────────────────
-loadSavedBooking();
+// ── BOOKING FLOW ───────────────────────────────────────────────────────
+function openBooking(zone) {
+  selectedZone = liveZones.find(z => z.id === zone.id);
+  const hdr = document.getElementById('book-header');
+  hdr.style.background = `linear-gradient(135deg, ${zone.color}, ${zone.color}CC)`;
+  document.getElementById('book-zone-name').textContent = zone.name;
+  document.getElementById('book-zone-sub').textContent = `${zone.type} · ${zone.dist} · ₹${zone.price}/hr`;
+  const tags = document.getElementById('book-zone-tags');
+  tags.innerHTML = zone.features.map(f =>
+    `<span style="background:rgba(255,255,255,0.2);border-radius:20px;padding:3px 10px;font-size:11px;color:white;">${f}</span>`).join('');
+  updatePriceSummary();
+  showScreen('book');
+}
 
+function selectChip(el, type) {
+  const row = el.closest('.chip-row');
+  row.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  if (type === 'vehicle') {
+    selectedVehicle = el.dataset.v;
+    el.style.borderColor = selectedZone ? selectedZone.color : 'var(--blue)';
+    el.style.background = selectedZone ? selectedZone.light : '#EBF2FF';
+  } else {
+    selectedDuration = parseInt(el.dataset.v);
+    el.style.borderColor = selectedZone ? selectedZone.color : 'var(--blue)';
+    el.style.background = selectedZone ? selectedZone.light : '#EBF2FF';
+  }
+  updatePriceSummary();
+}
+
+function updatePriceSummary() {
+  if (!selectedZone) return;
+  const subtotal = selectedZone.price * selectedDuration;
+  const total = subtotal + 5;
+  document.getElementById('ps-rate').textContent = `₹${selectedZone.price}/hr`;
+  document.getElementById('ps-dur').textContent = selectedDuration + ' hr' + (selectedDuration>1?'s':'');
+  document.getElementById('ps-sub').textContent = `₹${subtotal}`;
+  document.getElementById('ps-total').textContent = `₹${total}`;
+  document.getElementById('pay-btn').innerHTML = `<span>Pay ₹${total} via UPI</span><span>💳</span>`;
+}
+
+function processBooking() {
+  if (!selectedZone) { showToast('Please select a zone first'); return; }
+  const name = document.getElementById('inp-name').value.trim();
+  const phone = document.getElementById('inp-phone').value.trim();
+  const vnum = document.getElementById('inp-vehicle-num').value.trim();
+  if (!name) { showToast('Please enter your name'); return; }
+  if (!phone || phone.length < 10) { showToast('Please enter a valid phone number'); return; }
+
+  const id = 'PKS' + Math.floor(100000 + Math.random() * 900000);
+  const subtotal = selectedZone.price * selectedDuration;
+  currentBooking = {
+    id, name, phone, vnum, vehicle: selectedVehicle,
+    zone: selectedZone, duration: selectedDuration,
+    total: subtotal + 5, remainingSecs: selectedDuration * 3600,
+    time: new Date().toLocaleTimeString('en-IN', {hour:'2-digit', minute:'2-digit'}),
+  };
+
+  liveZones = liveZones.map(z => z.id === selectedZone.id ? {...z, available: Math.max(0, z.available-1)} : z);
+  refreshZoneList();
+
+  document.getElementById('conf-id').textContent = id;
+  document.getElementById('conf-id').style.color = selectedZone.color;
+  const rows = [
+    ['Zone', selectedZone.name],
+    ['Name', name],
+    ['Vehicle', `${selectedVehicle} · ${vnum || 'Not entered'}`],
+    ['Duration', selectedDuration + ' hour' + (selectedDuration>1?'s':'')],
+    ['Booked At', currentBooking.time],
+    ['Amount Paid', `₹${currentBooking.total}`],
+  ];
+  document.getElementById('conf-rows').innerHTML = rows.map(([k,v]) =>
+    `<div class="booking-row"><span class="bkey">${k}</span><span class="bval">${v}</span></div>`
+  ).join('');
+
+  drawQR(id);
+  fillActiveScreen();
+  startTimer();
+  showScreen('confirm');
+  showToast('🎉 Booking confirmed! ' + id);
+}
+
+// ── ACTIVE BOOKING ────────────────────────────────────────────────────
+function fillActiveScreen() {
+  if (!currentBooking) return;
+  document.getElementById('active-id-label').textContent = 'BOOKING · ' + currentBooking.id;
+  document.getElementById('active-zone-name').textContent = currentBooking.zone.name;
+  document.getElementById('active-details').innerHTML = [
+    `🅿️ Zone: <b>${currentBooking.zone.name}</b>`,
+    `👤 Name: <b>${currentBooking.name}</b>`,
+    `🚗 Vehicle: <b>${currentBooking.vehicle} · ${currentBooking.vnum || '—'}</b>`,
+    `⏱ Duration: <b>${currentBooking.duration} hour${currentBooking.duration>1?'s':''}</b>`,
+    `💰 Paid: <b>₹${currentBooking.total}</b>`,
+  ].map(l => `<div>${l}</div>`).join('');
+  updateStats();
+}
+
+function startTimer() {
+  if (timerInterval) clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
+    if (!currentBooking) return;
+    currentBooking.remainingSecs = Math.max(0, currentBooking.remainingSecs - 1);
+    const s = currentBooking.remainingSecs;
+    document.getElementById('timer-display').textContent =
+      String(Math.floor(s/3600)).padStart(2,'0') + ':' +
+      String(Math.floor((s%3600)/60)).padStart(2,'0') + ':' +
+      String(s%60).padStart(2,'0');
+    if (s === 0) showToast('⚠️ Parking time expired!', '#CC1A1A');
+  }, 1000);
+}
+
+function extendParking() {
+  if (!currentBooking) return;
+  currentBooking.remainingSecs += 3600;
+  currentBooking.total += currentBooking.zone.price;
+  showToast(`Extended 1 hour · ₹${currentBooking.zone.price} charged`);
+}
+
+function endBooking() {
+  if (timerInterval) clearInterval(timerInterval);
+  currentBooking = null;
+  showToast('Booking ended. Thank you for using ParkSmart! 🙏');
+  setTimeout(() => showScreen('home'), 600);
+}
+
+// ── QR CODE (minimal custom draw) ─────────────────────────────────────
+function drawQR(id) {
+  const svg = document.getElementById('qr-svg');
+  svg.innerHTML = '';
+  const size = 120, cells = 21, cell = Math.floor(size/cells);
+  let seed = id.split('').reduce((a,c) => a + c.charCodeAt(0), 0);
+  function rand() { seed = (seed * 1664525 + 1013904223) & 0xffffffff; return (seed >>> 0) / 0xffffffff; }
+  const matrix = Array.from({length:cells}, (_,r) => Array.from({length:cells}, (_,c) => {
+    if ((r<7&&c<7)||(r<7&&c>cells-8)||(r>cells-8&&c<7)) return 1;
+    if (r===7||r===cells-8||(c===7&&r>7&&r<cells-8)) return 0;
+    return rand() > 0.45 ? 1 : 0;
+  }));
+  matrix.forEach((row,r) => row.forEach((val,c) => {
+    if (val) {
+      const rect = document.createElementNS('http://www.w3.org/2000/svg','rect');
+      rect.setAttribute('x', c*cell); rect.setAttribute('y', r*cell);
+      rect.setAttribute('width', cell-1); rect.setAttribute('height', cell-1);
+      rect.setAttribute('fill','#1246A0'); rect.setAttribute('rx','1');
+      svg.appendChild(rect);
+    }
+  }));
+}
+
+// ── GOOGLE MAPS ───────────────────────────────────────────────────────
+function tryAutoloadMap() {
+  const saved = localStorage.getItem('gmaps_key');
+  if (saved) { document.getElementById('api-key-input').value = saved; loadGoogleMaps(); }
+  else {
+    const key = localStorage.getItem("gmaps_key") || DEFAULT_API_KEY;
+    document.getElementById('api-key-input').value = key;
+    loadGoogleMaps();
+  }
+}
+
+function loadGoogleMaps() {
+  const key = document.getElementById('api-key-input').value.trim();
+  if (!key || key.length < 20) { showToast('Please enter a valid API key'); return; }
+  localStorage.setItem('gmaps_key', key);
+  document.getElementById('map-prompt').innerHTML = '<div style="color:white;font-size:13px;padding:20px;">⏳ Loading map…</div>';
+  const script = document.createElement('script');
+  script.src = `https://maps.googleapis.com/maps/api/js?key=${key}&callback=initMap`;
+  script.onerror = () => { showToast('Invalid API key or network error'); document.getElementById('map-prompt').style.display='flex'; };
+  window.initMap = initGoogleMap;
+  document.head.appendChild(script);
+}
+
+function skipMap() {
+  document.getElementById('map-prompt').style.display = 'none';
+  renderFallbackMap();
+}
+
+function initGoogleMap() {
+  document.getElementById('map-prompt').style.display = 'none';
+  const center = { lat: 29.9457, lng: 78.1516 };
+  mapInstance = new google.maps.Map(document.getElementById('gmap'), {
+    center, zoom: 14,
+    styles: [
+      {elementType:'geometry', stylers:[{color:'#f5f5f5'}]},
+      {featureType:'water', elementType:'geometry', stylers:[{color:'#c9d8f0'}]},
+      {featureType:'road', elementType:'geometry', stylers:[{color:'#ffffff'}]},
+      {featureType:'road.arterial', elementType:'geometry', stylers:[{color:'#FFCC80'}]},
+      {featureType:'poi', stylers:[{visibility:'off'}]},
+      {featureType:'transit', stylers:[{visibility:'off'}]},
+    ],
+    disableDefaultUI: true,
+    zoomControl: true,
+  });
+  updateMapMarkers();
+}
+
+function updateMapMarkers() {
+  if (!mapInstance || typeof google === 'undefined') return;
+  mapMarkers.forEach(m => m.setMap(null));
+  mapMarkers = [];
+  liveZones.forEach(z => {
+    const oc = occupancyColor(z.available, z.total);
+    const pct = Math.round(z.available/z.total*100);
+    const marker = new google.maps.Marker({
+      position: { lat: z.lat, lng: z.lng },
+      map: mapInstance,
+      title: z.name,
+      icon: {
+        path: google.maps.SymbolPath.CIRCLE,
+        scale: 18,
+        fillColor: z.color,
+        fillOpacity: 0.95,
+        strokeColor: 'white',
+        strokeWeight: 2,
+      },
+      label: { text: String(z.available), color: 'white', fontSize: '11px', fontWeight: 'bold' }
+    });
+    const info = new google.maps.InfoWindow({
+      content: `<div style="font-family:DM Sans,sans-serif;padding:6px;">
+        <b style="font-size:13px;">${z.name}</b><br>
+        <span style="color:${oc};font-weight:600;">${z.available} spots free (${pct}%)</span><br>
+        <span style="color:#666;font-size:12px;">₹${z.price}/hr · ${z.dist}</span>
+      </div>`
+    });
+    marker.addListener('click', () => {
+      info.open(mapInstance, marker);
+      openBooking(z);
+    });
+    mapMarkers.push(marker);
+  });
+}
+
+function renderFallbackMap() {
+  const container = document.getElementById('gmap');
+  container.style.background = "linear-gradient(160deg, #d4e8c2, #c8ddb8)";
+  container.innerHTML = `<svg width="100%" height="100%" viewBox="0 0 390 340" xmlns="http://www.w3.org/2000/svg">
+    <rect width="390" height="340" fill="#d4e8c2"/>
+    <path d="M0,165 Q80,148 160,162 Q240,176 320,162 Q360,155 390,160 L390,195 Q360,185 320,192 Q240,206 160,192 Q80,178 0,195Z" fill="#4A90D9" opacity="0.5"/>
+    <text x="195" y="182" text-anchor="middle" font-size="13" fill="#1A4A90" font-weight="bold" font-style="italic" font-family="DM Sans,sans-serif">River Ganga</text>
+    <rect x="0" y="140" width="210" height="10" fill="#B8A070" opacity="0.7" rx="2"/>
+    <rect x="210" y="140" width="180" height="10" fill="#B8A070" opacity="0.7" rx="2"/>
+    <rect x="270" y="70" width="10" height="180" fill="#B8A070" opacity="0.7" rx="2"/>
+    <text x="60" y="133" font-size="10" fill="#7A6040" font-family="DM Sans,sans-serif">NH-58 Delhi–Dehradun</text>
+    ${liveZones.map((z,i) => {
+      const positions = [[148,145],[175,285],[262,118],[236,143],[156,228]];
+      const [x,y] = positions[i];
+      const oc = occupancyColor(z.available, z.total);
+      return `
+        <circle cx="${x}" cy="${y}" r="22" fill="${z.color}" opacity="0.2"/>
+        <circle cx="${x}" cy="${y}" r="15" fill="${z.color}" stroke="white" stroke-width="2.5"/>
+        <text x="${x}" y="${y+1}" text-anchor="middle" dominant-baseline="middle" font-size="10" font-weight="bold" fill="white" font-family="DM Sans,sans-serif">${z.available}</text>
+        <text x="${x}" y="${y+26}" text-anchor="middle" font-size="9" fill="${z.color}" font-weight="bold" font-family="DM Sans,sans-serif">${z.name.split(' ')[0]}</text>
+      `;
+    }).join('')}
+    <text x="195" y="325" text-anchor="middle" font-size="11" fill="#888" font-family="DM Sans,sans-serif">Add a Google Maps API key for live navigation</text>
+  </svg>`;
+}
+
+// ── TOAST ─────────────────────────────────────────────────────────────
+let toastTimeout;
+function showToast(msg, bg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  if (bg) t.style.background = bg;
+  else t.style.background = 'var(--deep)';
+  t.classList.add('show');
+  clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ── INIT ───────────────���───────────────────────────────────────────────
+refreshZoneList();
+updateStats();
 </script>
 </body>
-</html>
+  </html>

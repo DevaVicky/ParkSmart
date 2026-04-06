@@ -1008,6 +1008,13 @@ function showToast(msg, bg) {
 // ── INIT ──────────────────────────────────────────────────────────────────────
 refreshZoneList();
 updateStats();
+
+navigator.geolocation.getCurrentPosition(pos => {
+  const userLat = pos.coords.latitude;
+  const userLng = pos.coords.longitude;
+
+  console.log("Your location:", userLat, userLng);
+});
 </script>
 </body>
 </html>

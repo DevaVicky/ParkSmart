@@ -6,6 +6,8 @@
 <title>ParkSmart Haridwar</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#22c55e">
 <style>
   :root {
     --saffron: #FF6B00;
@@ -1090,6 +1092,13 @@ if (navigator.geolocation) {
   });
 }
 
+</script>
+<script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("./sw.js")
+    .then(() => console.log("Service Worker Registered"))
+    .catch(err => console.log("SW failed:", err));
+}
 </script>
 </body>
 </html>

@@ -1,45 +1,1095 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ParkSmart</title>
-    <meta name="theme-color" content="#FF6B00">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="ParkSmart">
-    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect fill='%23FF6B00' width='180' height='180'/><text x='50%' y='50%' font-size='90' fill='white' text-anchor='middle' dominant-baseline='central' font-weight='bold'>P</text></svg>">
-    <link rel="manifest" href="./manifest.json">
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<title>ParkSmart Haridwar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --saffron: #FF6B00;
+    --saffron-light: #FFF0E5;
+    --deep: #0A1628;
+    --blue: #1246A0;
+    --blue-mid: #1A5FCC;
+    --green: #0E7A45;
+    --green-light: #E6F7EE;
+    --red: #CC1A1A;
+    --gold: #E8A800;
+    --surface: #F7F8FC;
+    --card: #FFFFFF;
+    --border: #E8EBF4;
+    --text: #0A1628;
+    --muted: #7A859A;
+    --purple: #5B2D8E;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html, body { height:100%; background:#1A1A2E; display:flex; justify-content:center; align-items:center; font-family:'DM Sans',sans-serif; }
+
+  #phone {
+    width: 390px; height: 844px;
+    background: var(--surface);
+    border-radius: 44px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 40px 120px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(255,255,255,0.08);
+  }
+  .notch {
+    position:absolute; top:0; left:50%; transform:translateX(-50%);
+    width:120px; height:34px; background:#0A1628; border-radius:0 0 20px 20px; z-index:100;
+  }
+  .status-bar {
+    position:absolute; top:0; left:0; right:0; height:44px;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:12px 20px 0; z-index:99; pointer-events:none;
+    font-size:12px; font-weight:600;
+  }
+  .status-bar.light { color:#0A1628; }
+  .status-bar.dark { color:white; }
+
+  .screen {
+    position:absolute; inset:0;
+    overflow-y:auto; overflow-x:hidden;
+    display:none;
+    flex-direction:column;
+    background:var(--surface);
+    scrollbar-width:none;
+    padding-bottom: 80px;
+  }
+  .screen::-webkit-scrollbar { display:none; }
+  .screen.active { display:flex; }
+
+  .bottom-nav {
+    position:absolute; bottom:0; left:0; right:0; height:80px;
+    background:rgba(255,255,255,0.95);
+    backdrop-filter:blur(20px);
+    border-top:1px solid var(--border);
+    display:flex; align-items:center;
+    padding:0 10px 16px;
+    z-index:50;
+  }
+  .nav-item {
+    flex:1; display:flex; flex-direction:column; align-items:center; gap:4px;
+    cursor:pointer; padding:8px 4px;
+    transition:all 0.2s;
+  }
+  .nav-item .nav-icon { font-size:22px; transition:transform 0.2s; }
+  .nav-item .nav-label { font-size:10px; font-weight:600; color:var(--muted); transition:color 0.2s; }
+  .nav-item.active .nav-label { color:var(--saffron); }
+  .nav-item.active .nav-icon { transform:scale(1.15); }
+
+  #toast {
+    position:absolute; top:54px; left:16px; right:16px;
+    background:var(--deep); color:white;
+    padding:12px 18px; border-radius:16px;
+    font-size:13px; font-weight:500;
+    z-index:200; opacity:0;
+    transition:opacity 0.3s; pointer-events:none;
+    box-shadow:0 8px 24px rgba(0,0,0,0.3);
+  }
+  #toast.show { opacity:1; }
+
+  .home-header {
+    background:linear-gradient(155deg, #0A1628 0%, #1246A0 60%, #FF6B00 140%);
+    padding:52px 22px 24px;
+    color:white; position:relative; overflow:hidden;
+  }
+  .home-header::before {
+    content:''; position:absolute; top:-40px; right:-40px;
+    width:200px; height:200px; border-radius:50%;
+    background:rgba(255,107,0,0.15); pointer-events:none;
+  }
+  .home-header::after {
+    content:''; position:absolute; bottom:-60px; left:-20px;
+    width:160px; height:160px; border-radius:50%;
+    background:rgba(255,255,255,0.04); pointer-events:none;
+  }
+  .greeting { font-size:13px; opacity:0.7; font-weight:400; margin-bottom:4px; }
+  .app-title { font-family:'Syne',sans-serif; font-size:26px; font-weight:800; letter-spacing:-0.5px; }
+  .app-title span { color:#FF9A50; }
+
+  .live-pill {
+    display:inline-flex; align-items:center; gap:6px;
+    background:rgba(255,255,255,0.12); border-radius:20px;
+    padding:4px 12px; font-size:11px; margin-top:10px;
+  }
+  .live-dot {
+    width:7px; height:7px; border-radius:50%; background:#4ADE80;
+    animation:pulse 1.5s infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.3)} }
+
+  .stats-row {
+    display:grid; grid-template-columns:1fr 1fr 1fr;
+    gap:10px; margin-top:18px;
+  }
+  .stat-card {
+    background:rgba(255,255,255,0.10); border-radius:14px;
+    padding:12px; text-align:center;
+    border:1px solid rgba(255,255,255,0.08);
+  }
+  .stat-num { font-family:'Syne',sans-serif; font-size:22px; font-weight:800; }
+  .stat-label { font-size:10px; opacity:0.65; margin-top:2px; }
+
+  .festival-banner {
+    margin:14px 0 0;
+    background:rgba(255,150,0,0.2); border:1px solid rgba(255,150,0,0.4);
+    border-radius:12px; padding:10px 14px; font-size:12px;
+    display:flex; gap:8px; align-items:center;
+  }
+
+  .section-title {
+    font-family:'Syne',sans-serif; font-size:16px; font-weight:700;
+    color:var(--text); padding:18px 22px 10px;
+  }
+
+  .ai-tip {
+    margin:0 16px 6px;
+    background:linear-gradient(135deg, #EAD6F7, #D6E4F7);
+    border-radius:16px; padding:14px 16px;
+    border:1px solid rgba(91,45,142,0.15);
+  }
+  .ai-tip-label { font-size:11px; font-weight:700; color:var(--purple); margin-bottom:4px; }
+  .ai-tip-text { font-size:12px; color:var(--text); line-height:1.5; }
+
+  .zone-card {
+    margin:0 16px 10px;
+    background:var(--card); border-radius:18px;
+    padding:16px; cursor:pointer;
+    box-shadow:0 2px 12px rgba(0,0,0,0.06);
+    border:1.5px solid var(--border);
+    transition:all 0.2s; position:relative; overflow:hidden;
+  }
+  .zone-card:active { transform:scale(0.98); }
+  .zone-card .accent-line {
+    position:absolute; left:0; top:0; bottom:0; width:4px; border-radius:18px 0 0 18px;
+  }
+  .zone-card-inner { padding-left:10px; }
+  .zone-name { font-weight:700; font-size:14px; color:var(--text); }
+  .zone-sub { font-size:11px; color:var(--muted); margin-top:2px; }
+  .zone-price { font-family:'Syne',sans-serif; font-size:16px; font-weight:700; }
+  .zone-avail { font-size:11px; font-weight:700; margin-top:1px; }
+  .occ-bar-bg { background:#EAECF4; border-radius:6px; height:7px; margin-top:8px; overflow:hidden; }
+  .occ-bar-fill { height:100%; border-radius:6px; transition:width 1.5s ease; }
+  .zone-tags { display:flex; gap:6px; flex-wrap:wrap; margin-top:8px; }
+  .zone-tag { font-size:10px; padding:3px 8px; border-radius:20px; font-weight:600; }
+
+  .map-header {
+    background:var(--deep); padding:52px 22px 16px; color:white;
+  }
+  .map-header h2 { font-family:'Syne',sans-serif; font-size:20px; font-weight:700; }
+  .map-header p { font-size:12px; opacity:0.6; margin-top:2px; }
+  #map-container { height:340px; flex-shrink:0; position:relative; background:#E8F0E8; }
+  #gmap { width:100%; height:100%; }
+  .map-list { padding:14px 16px 0; }
+  .map-list-item {
+    display:flex; justify-content:space-between; align-items:center;
+    padding:12px 0; border-bottom:1px solid var(--border); cursor:pointer;
+  }
+  .map-list-item:last-child { border-bottom:none; }
+  .map-dot { width:11px; height:11px; border-radius:50%; margin-right:10px; flex-shrink:0; }
+
+  .map-key-prompt {
+    position:absolute; inset:0;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    background:rgba(10,22,40,0.82); color:white; text-align:center; padding:24px;
+    z-index:10;
+  }
+  .map-key-prompt input {
+    margin-top:12px; padding:10px 16px; border-radius:12px; border:none;
+    font-size:14px; width:100%; max-width:280px; outline:none;
+    font-family:'DM Sans',sans-serif; color:#0A1628;
+  }
+  .map-key-prompt button {
+    margin-top:10px; padding:10px 28px; border-radius:12px; border:none;
+    background:var(--saffron); color:white; font-size:14px; font-weight:700;
+    cursor:pointer; font-family:'Syne',sans-serif;
+  }
+  .map-key-note { font-size:11px; opacity:0.65; margin-top:8px; max-width:260px; line-height:1.5; }
+
+  .book-header {
+    padding:52px 22px 22px; color:white;
+    position:relative; overflow:hidden;
+    background: linear-gradient(135deg, #1246A0, #1246A0CC);
+  }
+  .book-header::after {
+    content:''; position:absolute; top:-60px; right:-60px;
+    width:220px; height:220px; border-radius:50%;
+    background:rgba(255,255,255,0.06); pointer-events:none;
+  }
+  .back-btn {
+    display:inline-flex; align-items:center; gap:6px;
+    font-size:13px; font-weight:600; cursor:pointer; margin-bottom:14px; opacity:0.8;
+  }
+  .book-zone-name { font-family:'Syne',sans-serif; font-size:22px; font-weight:800; line-height:1.2; }
+  .book-zone-sub { font-size:12px; opacity:0.75; margin-top:6px; }
+
+  .form-section { padding:20px 20px 0; }
+  .form-label { font-size:12px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px; }
+  .chip-row { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:20px; }
+  .chip {
+    padding:8px 16px; border-radius:24px; font-size:13px; font-weight:600;
+    border:2px solid var(--border); background:var(--card); cursor:pointer;
+    transition:all 0.15s; color:var(--text);
+  }
+
+  input.field {
+    width:100%; padding:14px 16px; border-radius:14px;
+    border:1.5px solid var(--border); font-size:14px;
+    font-family:'DM Sans',sans-serif; background:var(--card);
+    outline:none; margin-bottom:12px; color:var(--text);
+    transition:border-color 0.2s;
+  }
+  input.field:focus { border-color:var(--blue-mid); }
+
+  .price-summary {
+    margin:0 20px 20px;
+    background:var(--surface); border-radius:16px;
+    padding:16px; border:1.5px solid var(--border);
+  }
+  .price-row { display:flex; justify-content:space-between; font-size:13px; margin-bottom:8px; color:var(--muted); }
+  .price-row.total { font-size:16px; font-weight:700; color:var(--text); border-top:1px solid var(--border); padding-top:10px; margin-top:4px; }
+
+  .pay-btn {
+    margin:0 20px 12px; padding:17px; border-radius:16px;
+    font-family:'Syne',sans-serif; font-size:16px; font-weight:700;
+    color:white; text-align:center; cursor:pointer;
+    background:linear-gradient(135deg, var(--saffron), #E84000);
+    box-shadow:0 8px 24px rgba(255,107,0,0.35);
+    transition:all 0.2s;
+    display:flex; align-items:center; justify-content:center; gap:10px;
+  }
+  .pay-btn:active { transform:scale(0.97); box-shadow:none; }
+
+  .confirm-top {
+    background:linear-gradient(155deg, #0E7A45, #0A5530);
+    padding:60px 22px 30px; text-align:center; color:white;
+  }
+  .confirm-check { font-size:64px; animation:pop 0.4s ease; }
+  @keyframes pop { 0%{transform:scale(0)} 70%{transform:scale(1.15)} 100%{transform:scale(1)} }
+  .confirm-title { font-family:'Syne',sans-serif; font-size:26px; font-weight:800; margin-top:10px; }
+  .confirm-sub { font-size:13px; opacity:0.75; margin-top:4px; }
+
+  .booking-card {
+    margin:20px 16px;
+    background:var(--card); border-radius:20px;
+    padding:20px; box-shadow:0 4px 20px rgba(0,0,0,0.08);
+    border:1.5px solid var(--border);
+  }
+  .booking-id { font-family:'Syne',sans-serif; font-size:28px; font-weight:800; letter-spacing:2px; }
+  .booking-row { display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--border); font-size:13px; }
+  .booking-row:last-child { border-bottom:none; }
+  .booking-row .bkey { color:var(--muted); }
+  .booking-row .bval { font-weight:600; color:var(--text); }
+
+  .qr-box { text-align:center; padding:0 0 10px; }
+  .qr-svg { border-radius:12px; background:white; padding:12px; box-shadow:0 2px 10px rgba(0,0,0,0.08); display:inline-block; }
+
+  .active-top {
+    background:linear-gradient(155deg, #0A1628, #1246A0);
+    padding:52px 22px 26px; color:white; text-align:center;
+  }
+  .timer-display {
+    font-family:'Syne',sans-serif; font-size:52px; font-weight:800;
+    letter-spacing:2px; margin:10px 0 6px;
+  }
+  .timer-sub { font-size:12px; opacity:0.6; }
+  .active-zone { font-size:14px; font-weight:600; margin-top:8px; opacity:0.9; }
+
+  .active-card {
+    margin:14px 16px 10px;
+    background:var(--card); border-radius:18px; padding:16px;
+    box-shadow:0 2px 10px rgba(0,0,0,0.06); border:1.5px solid var(--border);
+  }
+  .active-card h3 { font-family:'Syne',sans-serif; font-size:14px; font-weight:700; color:var(--text); margin-bottom:10px; }
+
+  .action-btn {
+    margin:0 16px 10px; padding:15px; border-radius:16px;
+    font-family:'Syne',sans-serif; font-size:14px; font-weight:700;
+    text-align:center; cursor:pointer; transition:all 0.2s;
+  }
+  .action-btn:active { transform:scale(0.97); }
+  .action-btn.primary { background:var(--blue-mid); color:white; box-shadow:0 4px 16px rgba(26,95,204,0.3); }
+  .action-btn.danger { background:white; color:var(--red); border:2px solid var(--red); }
+  .action-btn.outline { background:white; color:var(--blue); border:2px solid var(--blue); }
+
+  @keyframes slideUp { from{transform:translateY(30px);opacity:0} to{transform:translateY(0);opacity:1} }
+  .slide-up { animation:slideUp 0.35s ease forwards; }
+</style>
 </head>
 <body>
-    <!-- Other body content goes here -->
-    <script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./service-worker.js')
-      .then(reg => {
-        console.log('Service Worker registered successfully:', reg);
-        showToast('✅ App ready for offline use');
-      })
-      .catch(err => console.log('Service Worker registration failed:', err));
+
+<div id="phone">
+  <div class="notch"></div>
+
+  <div class="status-bar dark" id="status-bar">
+    <span id="status-time">9:41</span>
+    <span>📶 🔋</span>
+  </div>
+
+  <div id="toast"></div>
+
+  <div class="bottom-nav">
+    <div class="nav-item active" onclick="showScreen('home')" data-screen="home">
+      <span class="nav-icon">🏠</span><span class="nav-label">Home</span>
+    </div>
+    <div class="nav-item" onclick="showScreen('map')" data-screen="map">
+      <span class="nav-icon">🗺️</span><span class="nav-label">Map</span>
+    </div>
+    <div class="nav-item" onclick="showScreen('book')" data-screen="book">
+      <span class="nav-icon">🅿️</span><span class="nav-label">Book</span>
+    </div>
+    <div class="nav-item" onclick="showActiveOrHome()" data-screen="active">
+      <span class="nav-icon">🎫</span><span class="nav-label">My Booking</span>
+    </div>
+  </div>
+
+  <!-- HOME -->
+  <div class="screen active" id="screen-home">
+    <div class="home-header">
+      <p class="greeting">Good morning 🙏</p>
+      <h1 class="app-title">Park<span>Smart</span></h1>
+      <div class="live-pill"><div class="live-dot"></div> AI-Updated Live Data</div>
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-num" id="total-avail">—</div>
+          <div class="stat-label">Spots Free</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">5</div>
+          <div class="stat-label">Zones</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num" id="busiest-label">—</div>
+          <div class="stat-label">Busiest Zone</div>
+        </div>
+      </div>
+      <div class="festival-banner" id="festival-banner" style="display:none">
+        🪔 <span>Ganga Aarti Mode Active — remote shuttle every 10 min. Pilgrims: book Har ki Pauri zone!</span>
+      </div>
+    </div>
+
+    <div style="padding:16px 16px 0;">
+      <div class="ai-tip">
+        <div class="ai-tip-label">🤖 AI Suggestion</div>
+        <div class="ai-tip-text" id="ai-tip-text">Analysing traffic patterns…</div>
+      </div>
+    </div>
+
+    <div style="padding:10px 16px 0; display:flex; gap:10px;">
+      <div onclick="toggleFestival()" id="festival-btn"
+        style="flex:1; background:var(--saffron-light); border:1.5px solid #FFCB90; border-radius:14px; padding:12px 14px; cursor:pointer; display:flex; align-items:center; gap:10px;">
+        <span style="font-size:20px;">🪔</span>
+        <div>
+          <div id="festival-btn-label" style="font-size:12px; font-weight:700; color:var(--saffron);">Aarti Mode</div>
+          <div style="font-size:11px; color:var(--muted);" id="festival-status">Off — tap to activate</div>
+        </div>
+      </div>
+      <div onclick="showScreen('map')"
+        style="flex:1; background:var(--green-light); border:1.5px solid #90D4A8; border-radius:14px; padding:12px 14px; cursor:pointer; display:flex; align-items:center; gap:10px;">
+        <span style="font-size:20px;">🗺️</span>
+        <div>
+          <div style="font-size:12px; font-weight:700; color:var(--green);">Live Map</div>
+          <div style="font-size:11px; color:var(--muted);">See all zones</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-title">Parking Zones</div>
+    <div id="zone-list"></div>
+    <div style="height:10px;"></div>
+  </div>
+
+  <!-- MAP -->
+  <div class="screen" id="screen-map" style="padding-bottom:80px;">
+    <div class="map-header">
+      <h2>Live Parking Map</h2>
+      <p>Haridwar — Real-time availability</p>
+    </div>
+    <div id="map-container">
+      <div id="gmap" style="width:100%;height:100%;"></div>
+      <div id="user-location-text" style="
+        position:absolute;
+        bottom:10px;
+        left:10px;
+        background:white;
+        padding:8px 12px;
+        border-radius:10px;
+        font-size:11px;
+        box-shadow:0 2px 10px rgba(0,0,0,0.2);
+        ">
+        📍 Locating...
+      </div>
+      <div class="map-key-prompt" id="map-prompt">
+        <div style="font-size:32px; margin-bottom:6px;">🗺️</div>
+        <div style="font-family:'Syne',sans-serif; font-size:16px; font-weight:700;">Enter Google Maps API Key</div>
+        <div class="map-key-note">Get a free key at <b>console.cloud.google.com</b> → Enable "Maps JavaScript API" → Create Key</div>
+        <input id="api-key-input" placeholder="AIzaSy..." type="text"/>
+        <button onclick="loadGoogleMaps()">Load Map</button>
+        <div class="map-key-note" style="margin-top:14px; color:#FFCC88;">Without a key the app still works fully — only the live map won't show.</div>
+        <div onclick="skipMap()" style="margin-top:8px; font-size:12px; color:#90CAF9; cursor:pointer; text-decoration:underline;">Skip — use offline map →</div>
+      </div>
+    </div>
+    <div class="map-list" id="map-zone-list"></div>
+  </div>
+
+  <!-- BOOK -->
+  <div class="screen" id="screen-book" style="padding-bottom:80px;">
+    <div class="book-header" id="book-header">
+      <div class="back-btn" onclick="showScreen('home')">← Back</div>
+      <div class="book-zone-name" id="book-zone-name">Select a Zone</div>
+      <div class="book-zone-sub" id="book-zone-sub">Choose a zone from Home or Map</div>
+      <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;" id="book-zone-tags"></div>
+    </div>
+
+    <div class="form-section">
+      <div class="form-label">Vehicle Type</div>
+      <div class="chip-row" id="vehicle-chips">
+        <div class="chip selected" data-v="Car" onclick="selectChip(this,'vehicle')">🚗 Car</div>
+        <div class="chip" data-v="Auto" onclick="selectChip(this,'vehicle')">🛺 Auto</div>
+        <div class="chip" data-v="Bus" onclick="selectChip(this,'vehicle')">🚌 Bus</div>
+        <div class="chip" data-v="Bike" onclick="selectChip(this,'vehicle')">🏍️ Bike</div>
+      </div>
+
+      <div class="form-label">Duration</div>
+      <div class="chip-row" id="duration-chips">
+        <div class="chip" data-v="1" onclick="selectChip(this,'duration')">1 hr</div>
+        <div class="chip selected" data-v="2" onclick="selectChip(this,'duration')">2 hrs</div>
+        <div class="chip" data-v="3" onclick="selectChip(this,'duration')">3 hrs</div>
+        <div class="chip" data-v="6" onclick="selectChip(this,'duration')">Half Day</div>
+        <div class="chip" data-v="12" onclick="selectChip(this,'duration')">Full Day</div>
+      </div>
+
+      <div class="form-label">Your Details</div>
+      <input class="field" id="inp-name" placeholder="Full Name" autocomplete="off"/>
+      <input class="field" id="inp-phone" placeholder="Phone Number" type="tel" autocomplete="off"/>
+      <input class="field" id="inp-vehicle-num" placeholder="Vehicle Number (e.g. UK07AB1234)" autocomplete="off"/>
+    </div>
+
+    <div class="price-summary">
+      <div class="price-row"><span>Rate</span><span id="ps-rate">—</span></div>
+      <div class="price-row"><span>Duration</span><span id="ps-dur">—</span></div>
+      <div class="price-row"><span>Subtotal</span><span id="ps-sub">—</span></div>
+      <div class="price-row"><span>Convenience fee</span><span>Rs.5</span></div>
+      <div class="price-row total"><span>Total</span><span id="ps-total">—</span></div>
+    </div>
+
+    <div class="pay-btn" id="pay-btn" onclick="processBooking()">
+      <span>Pay via UPI</span><span>💳</span>
+    </div>
+    <div style="text-align:center; font-size:11px; color:var(--muted); margin-bottom:10px;">
+      Secured payment · Instant confirmation
+    </div>
+  </div>
+
+  <!-- CONFIRM -->
+  <div class="screen" id="screen-confirm" style="padding-bottom:80px;">
+    <div class="confirm-top">
+      <div class="confirm-check">✅</div>
+      <div class="confirm-title">Booking Confirmed!</div>
+      <div class="confirm-sub">Your spot is reserved</div>
+    </div>
+
+    <div class="booking-card slide-up">
+      <div style="font-size:11px; color:var(--muted); margin-bottom:4px; text-transform:uppercase; letter-spacing:0.5px;">Booking ID</div>
+      <div class="booking-id" id="conf-id">PKS000000</div>
+      <div style="margin-top:14px;" id="conf-rows"></div>
+    </div>
+
+    <div class="qr-box">
+      <div class="qr-svg">
+        <svg id="qr-svg" width="120" height="120" viewBox="0 0 120 120"></svg>
+      </div>
+      <div style="font-size:11px; color:var(--muted); margin-top:8px;">Scan this QR at the barrier</div>
+    </div>
+
+    <div class="action-btn primary" onclick="showScreen('active')">View Live Countdown →</div>
+    <div class="action-btn outline" onclick="showScreen('home')">Back to Home</div>
+  </div>
+
+  <!-- ACTIVE -->
+  <div class="screen" id="screen-active" style="padding-bottom:80px;">
+    <div class="active-top">
+      <div style="font-size:12px; opacity:0.6; margin-bottom:4px;" id="active-id-label">—</div>
+      <div class="timer-display" id="timer-display">00:00:00</div>
+      <div class="timer-sub">Time Remaining</div>
+      <div class="active-zone" id="active-zone-name">—</div>
+    </div>
+
+    <div class="active-card">
+      <h3>📋 Booking Details</h3>
+      <div id="active-details" style="font-size:13px; line-height:2; color:var(--text);"></div>
+    </div>
+
+    <div class="active-card">
+      <h3>🤖 AI Alert</h3>
+      <div id="active-ai-text" style="font-size:12px; color:var(--muted); line-height:1.6;"></div>
+    </div>
+
+    <div class="action-btn primary" onclick="extendParking()">+ Extend +1 hour</div>
+    <div class="action-btn danger" onclick="endBooking()">🚗 Exit &amp; End Booking</div>
+  </div>
+
+</div><!-- /phone -->
+
+<script>
+
+let userLocation = null;
+
+function calculateDistance(lat1, lng1, lat2, lng2) {
+  var R = 6371; // Earth radius in km
+  var dLat = (lat2 - lat1) * Math.PI / 180;
+  var dLng = (lng2 - lng1) * Math.PI / 180;
+
+  var a =
+    Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(lat1 * Math.PI / 180) *
+    Math.cos(lat2 * Math.PI / 180) *
+    Math.sin(dLng/2) * Math.sin(dLng/2);
+
+  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
+}
+
+// ── DATA ─────────────────────────────────────────────────────────────────────
+const ZONES = [
+  { id:1, name:"Singhdwar Entry Zone",    type:"Multi-Level",      total:500,  available:143,
+    dist:"0.3 km · NH-58 Gate",    price:30,
+    features:["CCTV","EV Charging","Shuttle"],
+    color:"#1246A0", light:"#D6E4F7", lat:29.9457, lng:78.1642 },
+  { id:2, name:"Jwalapur Commercial Hub", type:"Surface + Rooftop", total:300,  available:57,
+    dist:"0.1 km · Market Area",   price:20,
+    features:["30-min Free","24/7 Guard","Rain Cover"],
+    color:"#C05000", light:"#FDE8D0", lat:29.9102, lng:78.1390 },
+  { id:3, name:"Har ki Pauri Pilgrim Zone",type:"Pilgrim Parking",  total:800,  available:312,
+    dist:"0.8 km · Sacred Ghats",  price:40,
+    features:["Shuttle 10min","Locker Room","Prayer Hall"],
+    color:"#5B2D8E", light:"#EAD6F7", lat:29.9580, lng:78.1625 },
+  { id:4, name:"Railway Station Buffer",  type:"Park & Ride",      total:200,  available:88,
+    dist:"0.2 km �� Haridwar Jn.", price:15,
+    features:["Park & Ride","E-Rickshaw","CCTV"],
+    color:"#0E7A45", light:"#D6F0E0", lat:29.9456, lng:78.1520 },
+  { id:5, name:"Kumbh Mela Ground",       type:"Event Parking",    total:5000, available:2340,
+    dist:"1.2 km · Main Ghat",    price:50,
+    features:["Pre-Book Only","Mega Shuttle","Medical Camp"],
+    color:"#8B1A1A", light:"#FFE4E4", lat:29.9327, lng:78.1508 },
+];
+
+let liveZones       = ZONES.map(z => Object.assign({}, z));
+let festivalMode    = false;
+let selectedZone    = null;
+let selectedVehicle = "Car";
+let selectedDuration = 2;
+let currentBooking  = null;
+let timerInterval   = null;
+let mapInstance     = null;
+let mapMarkers      = [];
+let toastTimeout;
+
+// ── LIVE SIMULATION ───────────────────────────────────────────────────────────
+setInterval(function() {
+  liveZones = liveZones.map(function(z) {
+    return Object.assign({}, z, {
+      available: Math.max(0, Math.min(z.total, z.available + Math.floor(Math.random() * 7) - 3))
+    });
+  });
+  refreshZoneList();
+  updateStats();
+  updateMapMarkers();
+}, 5000);
+
+// ── CLOCK ─────────────────────────────────────────────────────────────────────
+function updateClock() {
+  var now = new Date();
+  document.getElementById('status-time').textContent =
+    String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
+}
+setInterval(updateClock, 10000);
+updateClock();
+
+// ── SCREEN NAVIGATION ────────────────────────────────────────────────────────
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
+  document.getElementById('screen-' + name).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(function(n) {
+    n.classList.toggle('active', n.dataset.screen === name);
+  });
+  var darkScreens = ['home', 'map', 'active'];
+  document.getElementById('status-bar').className = 'status-bar ' + (darkScreens.indexOf(name) >= 0 ? 'dark' : 'light');
+  if (name === 'map' && !mapInstance) tryAutoloadMap();
+}
+
+function showActiveOrHome() {
+  showScreen(currentBooking ? 'active' : 'home');
+}
+
+// ── OCCUPANCY COLOUR ─────────────────────────────────────────────────────────
+function occupancyColor(avail, total) {
+  var p = avail / total;
+  if (p > 0.35) return '#0E7A45';
+  if (p > 0.12) return '#C05000';
+  return '#CC1A1A';
+}
+
+// ── ZONE LIST RENDER ───────��─────────────────────────────────────────────────
+function refreshZoneList() {
+  var container = document.getElementById('zone-list');
+  if (!container) return;
+  container.innerHTML = '';
+  liveZones.forEach(function(z) {
+    var pct = Math.round(z.available / z.total * 100);
+    var oc  = occupancyColor(z.available, z.total);
+    var div = document.createElement('div');
+    div.className = 'zone-card';
+    
+    var distanceText = z.dist;
+    if (userLocation) {
+      var d = calculateDistance(
+        userLocation.lat,
+        userLocation.lng,
+        z.lat,
+        z.lng
+      );
+      distanceText = d.toFixed(2) + " km away";
+    }
+    
+    div.innerHTML =
+      '<div class="accent-line" style="background:' + z.color + '"></div>' +
+      '<div class="zone-card-inner">' +
+        '<div style="display:flex;justify-content:space-between;align-items:flex-start;">' +
+          '<div>' +
+            '<div class="zone-name">' + z.name + '</div>' +
+            '<div class="zone-sub">' + z.type + ' · ' + distanceText + '</div>' +
+          '</div>' +
+          '<div style="text-align:right;flex-shrink:0;margin-left:10px;">' +
+            '<div class="zone-price" style="color:' + z.color + '">Rs.' + z.price + '/hr</div>' +
+            '<div class="zone-avail" style="color:' + oc + '">' + (z.available > 0 ? z.available + ' free' : 'FULL') + '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="occ-bar-bg"><div class="occ-bar-fill" style="width:' + pct + '%;background:' + oc + '"></div></div>' +
+        '<div style="display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-top:4px;">' +
+          '<span>' + pct + '% available</span><span>' + z.total + ' total spaces</span>' +
+        '</div>' +
+        '<div class="zone-tags">' +
+          z.features.map(function(f) {
+            return '<span class="zone-tag" style="background:' + z.light + ';color:' + z.color + '">' + f + '</span>';
+          }).join('') +
+        '</div>' +
+      '</div>';
+    div.onclick = (function(zone) { return function() { openBooking(zone); }; })(z);
+    container.appendChild(div);
+  });
+
+  // Map zone list
+  var ml = document.getElementById('map-zone-list');
+  if (!ml) return;
+  ml.innerHTML = '';
+  liveZones.forEach(function(z) {
+    var oc = occupancyColor(z.available, z.total);
+    var row = document.createElement('div');
+    row.className = 'map-list-item';
+    row.innerHTML =
+      '<div style="display:flex;align-items:center;">' +
+        '<div class="map-dot" style="background:' + z.color + '"></div>' +
+        '<div>' +
+          '<div style="font-size:13px;font-weight:700;color:var(--text)">' + z.name + '</div>' +
+          '<div style="font-size:11px;color:var(--muted)">' + z.dist + '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div style="text-align:right;">' +
+        '<div style="font-size:13px;font-weight:700;color:' + oc + '">' + z.available + ' free</div>' +
+        '<div style="font-size:11px;color:var(--muted)">Rs.' + z.price + '/hr</div>' +
+      '</div>';
+    row.onclick = (function(zone) { return function() { openBooking(zone); }; })(z);
+    ml.appendChild(row);
   });
 }
 
-// Detect offline/online status
-window.addEventListener('online', () => {
-  showToast('🟢 Back online!');
-});
-window.addEventListener('offline', () => {
-  showToast('📴 You are offline - app features available locally');
-});
+// ── STATS + AI TIP ────────────────────────────────────────────────────────────
+function updateStats() {
+  var total = liveZones.reduce(function(a, z) { return a + z.available; }, 0);
+  var el = document.getElementById('total-avail');
+  if (el) el.textContent = total.toLocaleString('en-IN');
 
-// PWA Install Prompt
-let deferredPrompt;
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
-  console.log('Install prompt ready');
-});
+  var busiest = liveZones.reduce(function(a, b) {
+    return (b.available / b.total < a.available / a.total) ? b : a;
+  });
+  var bl = document.getElementById('busiest-label');
+  if (bl) bl.textContent = Math.round(busiest.available / busiest.total * 100) + '%';
+
+  var best = getBestZone();
+  var tipEl = document.getElementById('ai-tip-text');
+  if (tipEl) {
+    tipEl.textContent = festivalMode
+      ? 'Aarti Mode: Book Har ki Pauri Pilgrim Zone. Shuttle departs Bay 3 every 10 min.'
+      : 'Best zone right now: ' + (best ? best.name : '—') + ' (' + (best ? best.available : '—') + ' spots free). Est. arrival: ' + (Math.ceil(Math.random() * 4) + 2) + ' min.';
+  }
+
+  var aiActive = document.getElementById('active-ai-text');
+  if (aiActive && currentBooking) {
+    aiActive.textContent = festivalMode
+      ? 'Aarti ends in ~30 min. Exit via Gate B to avoid post-aarti rush. Shuttle at Bay 3.'
+      : 'Occupancy is stable in your zone. No congestion expected for the next 2 hours. Enjoy your visit!';
+  }
+}
+
+function getBestZone() {
+  var zones = liveZones.filter(function(z) { return z.available > 0; });
+  if (!zones.length) return null;
+  return zones.sort(function(a, b) {
+    var sa = (a.available / a.total) * 0.6 - a.price * 0.2;
+    var sb = (b.available / b.total) * 0.6 - b.price * 0.2;
+    return sb - sa;
+  })[0];
+}
+
+// ── FESTIVAL MODE ─────────────────────────────────────────────────────────────
+function toggleFestival() {
+  festivalMode = !festivalMode;
+  document.getElementById('festival-banner').style.display = festivalMode ? '' : 'none';
+  document.getElementById('festival-status').textContent = festivalMode ? 'Active 🟢' : 'Off — tap to activate';
+  var btn = document.getElementById('festival-btn');
+  btn.style.background = festivalMode ? '#FF6B00' : 'var(--saffron-light)';
+  var lbl = document.getElementById('festival-btn-label');
+  if (lbl) { lbl.style.color = festivalMode ? 'white' : 'var(--saffron)'; }
+  updateStats();
+  showToast(festivalMode ? 'Aarti Mode Activated!' : 'Aarti Mode Deactivated');
+}
+
+// ── BOOKING FLOW ──────────────────────────────────────────────────────────────
+function openBooking(zone) {
+  selectedZone = liveZones.find(function(z) { return z.id === zone.id; });
+  document.getElementById('book-header').style.background =
+    'linear-gradient(135deg, ' + zone.color + ', ' + zone.color + 'BB)';
+  document.getElementById('book-zone-name').textContent = zone.name;
+  document.getElementById('book-zone-sub').textContent = zone.type + ' · ' + zone.dist + ' · Rs.' + zone.price + '/hr';
+  document.getElementById('book-zone-tags').innerHTML = zone.features.map(function(f) {
+    return '<span style="background:rgba(255,255,255,0.2);border-radius:20px;padding:3px 10px;font-size:11px;color:white;">' + f + '</span>';
+  }).join('');
+  // Colour selected chips
+  document.querySelectorAll('#vehicle-chips .chip.selected, #duration-chips .chip.selected').forEach(function(c) {
+    c.style.borderColor = zone.color;
+    c.style.background = zone.light;
+  });
+  updatePriceSummary();
+  showScreen('book');
+}
+
+function selectChip(el, type) {
+  var row = el.closest('.chip-row');
+  row.querySelectorAll('.chip').forEach(function(c) {
+    c.classList.remove('selected');
+    c.style.borderColor = '';
+    c.style.background = '';
+  });
+  el.classList.add('selected');
+  el.style.borderColor = selectedZone ? selectedZone.color : 'var(--blue)';
+  el.style.background  = selectedZone ? selectedZone.light : '#EBF2FF';
+  if (type === 'vehicle') {
+    selectedVehicle = el.dataset.v;
+  } else {
+    selectedDuration = parseInt(el.dataset.v, 10);
+  }
+  updatePriceSummary();
+}
+
+function updatePriceSummary() {
+  if (!selectedZone) return;
+  var subtotal = selectedZone.price * selectedDuration;
+  var total    = subtotal + 5;
+  document.getElementById('ps-rate').textContent  = 'Rs.' + selectedZone.price + '/hr';
+  document.getElementById('ps-dur').textContent   = selectedDuration + ' hr' + (selectedDuration > 1 ? 's' : '');
+  document.getElementById('ps-sub').textContent   = 'Rs.' + subtotal;
+  document.getElementById('ps-total').textContent = 'Rs.' + total;
+  document.getElementById('pay-btn').innerHTML    = '<span>Pay Rs.' + total + ' via UPI</span><span>💳</span>';
+}
+
+function processBooking() {
+  if (!selectedZone) { showToast('Please select a zone first'); return; }
+  var name  = document.getElementById('inp-name').value.trim();
+  var phone = document.getElementById('inp-phone').value.trim();
+  var vnum  = document.getElementById('inp-vehicle-num').value.trim();
+  if (!name)              { showToast('Please enter your name'); return; }
+  if (phone.length < 10)  { showToast('Please enter a valid 10-digit phone number'); return; }
+
+  var id       = 'PKS' + Math.floor(100000 + Math.random() * 900000);
+  var subtotal = selectedZone.price * selectedDuration;
+  currentBooking = {
+    id: id, name: name, phone: phone, vnum: vnum,
+    vehicle: selectedVehicle,
+    zone: selectedZone,
+    duration: selectedDuration,
+    total: subtotal + 5,
+    remainingSecs: selectedDuration * 3600,
+    time: new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }),
+  };
+
+  liveZones = liveZones.map(function(z) {
+    return z.id === selectedZone.id
+      ? Object.assign({}, z, { available: Math.max(0, z.available - 1) })
+      : z;
+  });
+  refreshZoneList();
+
+  // Fill confirm screen
+  document.getElementById('conf-id').textContent  = id;
+  document.getElementById('conf-id').style.color  = selectedZone.color;
+  var rows = [
+    ['Zone',         selectedZone.name],
+    ['Name',         name],
+    ['Vehicle',      selectedVehicle + (vnum ? ' · ' + vnum : '')],
+    ['Duration',     selectedDuration + ' hour' + (selectedDuration > 1 ? 's' : '')],
+    ['Booked At',    currentBooking.time],
+    ['Amount Paid',  'Rs.' + currentBooking.total],
+  ];
+  document.getElementById('conf-rows').innerHTML = rows.map(function(r) {
+    return '<div class="booking-row"><span class="bkey">' + r[0] + '</span><span class="bval">' + r[1] + '</span></div>';
+  }).join('');
+
+  drawQR(id);
+  fillActiveScreen();
+  startTimer();
+  showScreen('confirm');
+  showToast('Booking confirmed! ' + id);
+}
+
+// ── ACTIVE BOOKING ────────────────────────────────────────────────────────────
+function fillActiveScreen() {
+  if (!currentBooking) return;
+  document.getElementById('active-id-label').textContent  = 'BOOKING · ' + currentBooking.id;
+  document.getElementById('active-zone-name').textContent = currentBooking.zone.name;
+  document.getElementById('active-details').innerHTML = [
+    'Zone: <b>' + currentBooking.zone.name + '</b>',
+    'Name: <b>' + currentBooking.name + '</b>',
+    'Vehicle: <b>' + currentBooking.vehicle + (currentBooking.vnum ? ' · ' + currentBooking.vnum : '') + '</b>',
+    'Duration: <b>' + currentBooking.duration + ' hour' + (currentBooking.duration > 1 ? 's' : '') + '</b>',
+    'Paid: <b>Rs.' + currentBooking.total + '</b>',
+  ].map(function(l) { return '<div>' + l + '</div>'; }).join('');
+  updateStats();
+}
+
+function startTimer() {
+  if (timerInterval) clearInterval(timerInterval);
+  timerInterval = setInterval(function() {
+    if (!currentBooking) { clearInterval(timerInterval); return; }
+    currentBooking.remainingSecs = Math.max(0, currentBooking.remainingSecs - 1);
+    var s = currentBooking.remainingSecs;
+    var display = document.getElementById('timer-display');
+    if (display) {
+      display.textContent =
+        String(Math.floor(s / 3600)).padStart(2, '0') + ':' +
+        String(Math.floor((s % 3600) / 60)).padStart(2, '0') + ':' +
+        String(s % 60).padStart(2, '0');
+    }
+    if (s === 0) showToast('Parking time expired!');
+  }, 1000);
+}
+
+function extendParking() {
+  if (!currentBooking) return;
+  currentBooking.remainingSecs += 3600;
+  currentBooking.total += currentBooking.zone.price;
+  showToast('Extended 1 hour · Rs.' + currentBooking.zone.price + ' charged');
+}
+
+function endBooking() {
+  if (timerInterval) clearInterval(timerInterval);
+  timerInterval = null;
+  currentBooking = null;
+  showToast('Booking ended. Thank you for using ParkSmart!');
+  setTimeout(function() { showScreen('home'); }, 600);
+}
+
+// ── QR CODE ───────────────────────────────────────────────────────────────────
+function drawQR(id) {
+  var svg   = document.getElementById('qr-svg');
+  svg.innerHTML = '';
+  var cells = 21, cell = Math.floor(120 / cells);
+  var seed  = id.split('').reduce(function(a, c) { return a + c.charCodeAt(0); }, 0);
+  function rand() {
+    seed = ((seed * 1664525 + 1013904223) | 0) >>> 0;
+    return seed / 0xffffffff;
+  }
+  for (var r = 0; r < cells; r++) {
+    for (var c = 0; c < cells; c++) {
+      var isFinder = (r < 7 && c < 7) || (r < 7 && c > cells - 8) || (r > cells - 8 && c < 7);
+      var isSep    = r === 7 || r === cells - 8 || (c === 7 && r > 7 && r < cells - 8);
+      var on = isFinder ? true : isSep ? false : rand() > 0.45;
+      if (on) {
+        var rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        rect.setAttribute('x', c * cell);
+        rect.setAttribute('y', r * cell);
+        rect.setAttribute('width',  cell - 1);
+        rect.setAttribute('height', cell - 1);
+        rect.setAttribute('fill', '#1246A0');
+        rect.setAttribute('rx', '1');
+        svg.appendChild(rect);
+      }
+    }
+  }
+}
+
+function tryAutoloadMap() {
+  document.getElementById('map-prompt').style.display = 'none';
+  loadGoogleMaps();
+}
+
+function loadGoogleMaps() {
+  var key = "AIzaSyBbbOqX1omXUIHsz5VGzvJrCTaJUMub98E"; // 👈 Replace with your Google Maps API key
+
+  var script = document.createElement('script');
+  script.src = 'https://maps.googleapis.com/maps/api/js?key=' + key + '&callback=initGoogleMap';
+  script.async = true;
+  script.defer = true;
+
+  window.initGoogleMap = initGoogleMap;
+  document.head.appendChild(script);
+}
+
+function skipMap() {
+  document.getElementById('map-prompt').style.display = 'none';
+  renderFallbackMap();
+}
+
+function initGoogleMap() {
+  document.getElementById('map-prompt').style.display = 'none';
+  var center = { lat: 29.9457, lng: 78.1516 };
+  mapInstance = new google.maps.Map(document.getElementById('gmap'), {
+    center: center, zoom: 14,
+    styles: [
+      { elementType: 'geometry',  stylers: [{ color: '#f5f5f5' }] },
+      { featureType: 'water',     elementType: 'geometry', stylers: [{ color: '#c9d8f0' }] },
+      { featureType: 'road',      elementType: 'geometry', stylers: [{ color: '#ffffff' }] },
+      { featureType: 'road.arterial', elementType: 'geometry', stylers: [{ color: '#FFCC80' }] },
+      { featureType: 'poi',       stylers: [{ visibility: 'off' }] },
+      { featureType: 'transit',   stylers: [{ visibility: 'off' }] },
+    ],
+    disableDefaultUI: true,
+    zoomControl: true,
+  });
+  updateMapMarkers();
+
+  // 📍 USER LOCATION
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(position) {
+      var userPos = {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude
+      };
+      userLocation = userPos;
+      refreshZoneList();
+      document.getElementById("user-location-text").innerHTML =
+        "📍 Lat: " + userPos.lat.toFixed(5) +
+        "<br>Lng: " + userPos.lng.toFixed(5);
+      // Move map to your location
+      mapInstance.setCenter(userPos);
+
+      // Add marker (blue dot style)
+      new google.maps.Marker({
+        position: userPos,
+        map: mapInstance,
+        title: "You are here",
+        icon: {
+          path: google.maps.SymbolPath.CIRCLE,
+          scale: 10,
+          fillColor: "#4285F4",
+          fillOpacity: 1,
+          strokeColor: "white",
+          strokeWeight: 2
+        }
+      });
+
+    }, function() {
+      showToast("Location access denied");
+    });
+  } else {
+    showToast("Geolocation not supported");
+  }
+}
+
+function updateMapMarkers() {
+  if (!mapInstance || typeof google === 'undefined') return;
+  mapMarkers.forEach(function(m) { m.setMap(null); });
+  mapMarkers = [];
+  liveZones.forEach(function(z) {
+    var oc  = occupancyColor(z.available, z.total);
+    var pct = Math.round(z.available / z.total * 100);
+    var marker = new google.maps.Marker({
+      position: { lat: z.lat, lng: z.lng },
+      map: mapInstance,
+      title: z.name,
+      icon: {
+        path: google.maps.SymbolPath.CIRCLE,
+        scale: 18,
+        fillColor: z.color, fillOpacity: 0.95,
+        strokeColor: 'white', strokeWeight: 2,
+      },
+      label: { text: String(z.available), color: 'white', fontSize: '11px', fontWeight: 'bold' }
+    });
+    var info = new google.maps.InfoWindow({
+      content: '<div style="font-family:DM Sans,sans-serif;padding:6px;">' +
+        '<b style="font-size:13px;">' + z.name + '</b><br>' +
+        '<span style="color:' + oc + ';font-weight:600;">' + z.available + ' spots free (' + pct + '%)</span><br>' +
+        '<span style="color:#666;font-size:12px;">Rs.' + z.price + '/hr · ' + z.dist + '</span>' +
+        '</div>'
+    });
+    marker.addListener('click', (function(zone, infoWin) {
+      return function() { infoWin.open(mapInstance, marker); openBooking(zone); };
+    })(z, info));
+    mapMarkers.push(marker);
+  });
+}
+
+function renderFallbackMap() {
+  var container = document.getElementById('gmap');
+  var pins = liveZones.map(function(z, i) {
+    var positions = [[148,145],[175,240],[262,118],[236,143],[156,205]];
+    var x = positions[i][0], y = positions[i][1];
+    return '<circle cx="' + x + '" cy="' + y + '" r="22" fill="' + z.color + '" opacity="0.18"/>' +
+      '<circle cx="' + x + '" cy="' + y + '" r="15" fill="' + z.color + '" stroke="white" stroke-width="2.5"/>' +
+      '<text x="' + x + '" y="' + (y + 1) + '" text-anchor="middle" dominant-baseline="middle" font-size="10" font-weight="bold" fill="white" font-family="DM Sans,sans-serif">' + z.available + '</text>' +
+      '<text x="' + x + '" y="' + (y + 26) + '" text-anchor="middle" font-size="9" fill="' + z.color + '" font-weight="bold" font-family="DM Sans,sans-serif">' + z.name.split(' ')[0] + '</text>';
+  }).join('');
+  container.innerHTML =
+    '<svg width="100%" height="100%" viewBox="0 0 390 340" xmlns="http://www.w3.org/2000/svg">' +
+      '<rect width="390" height="340" fill="#d4e8c2"/>' +
+      '<path d="M0,165 Q80,148 160,162 Q240,176 320,162 Q360,155 390,160 L390,195 Q360,185 320,192 Q240,206 160,192 Q80,178 0,195Z" fill="#4A90D9" opacity="0.5"/>' +
+      '<text x="195" y="182" text-anchor="middle" font-size="13" fill="#1A4A90" font-weight="bold" font-style="italic" font-family="DM Sans,sans-serif">River Ganga</text>' +
+      '<rect x="0" y="140" width="210" height="10" fill="#B8A070" opacity="0.7" rx="2"/>' +
+      '<rect x="210" y="140" width="180" height="10" fill="#B8A070" opacity="0.7" rx="2"/>' +
+      '<rect x="270" y="70" width="10" height="180" fill="#B8A070" opacity="0.7" rx="2"/>' +
+      '<text x="60" y="133" font-size="10" fill="#7A6040" font-family="DM Sans,sans-serif">NH-58 Delhi-Dehradun</text>' +
+      pins +
+      '<text x="195" y="328" text-anchor="middle" font-size="11" fill="#888" font-family="DM Sans,sans-serif">Add a Google Maps API key for live navigation</text>' +
+    '</svg>';
+}
+
+// ── TOAST ─────────────────────────────────────────────────────────────────────
+function showToast(msg, bg) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.background = bg || 'var(--deep)';
+  t.classList.add('show');
+  clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(function() { t.classList.remove('show'); }, 2800);
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+refreshZoneList();
+updateStats();
+
+if (navigator.geolocation) {
+  navigator.geolocation.getCurrentPosition(function(pos) {
+    userLocation = {
+      lat: pos.coords.latitude,
+      lng: pos.coords.longitude
+    };
+    refreshZoneList();
+    console.log("Your location:", userLocation.lat, userLocation.lng);
+  });
+}
+
 </script>
 </body>
 </html>
